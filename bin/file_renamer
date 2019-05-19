@@ -2,15 +2,18 @@
 
 <?php
 
-$file_names_file = 'converted/file_names.txt';
+define('FOLDER', 'renamed');
+define('FILE_NAMES', 'file_names.txt');
+
+$file_names_file = FOLDER . '/' . FILE_NAMES;
 
 function getFiles($dir){
-	return array_filter(scandir($dir), function($f){
-			return ! in_array($f, ['.', '..', 'converted', 'file_names.txt']);	
-			});
+    return array_filter(scandir($dir, SCANDIR_SORT_ASCENDING), function($f){
+	    return ! in_array($f, ['.', '..', FOLDER, FILE_NAMES], false);
+	});
 }
 
-function createIndexedFileArray($file_string_array)
+function createIndexedFileArray(array $file_string_array): array
 {
 	$return = [];
 	$file_string_array = array_filter($file_string_array);
@@ -27,31 +30,28 @@ function createIndexedFileArray($file_string_array)
 if(file_exists($file_names_file)){
 	$file_names = explode(PHP_EOL, file_get_contents($file_names_file));	
 	$new_files = createIndexedFileArray($file_names);
-	$old_file_array = createIndexedFileArray(getFiles('./converted'));
+	$old_file_array = createIndexedFileArray(getFiles('./'. FOLDER));
 	foreach($new_files as $new_file_index => $new_file){
 		$new_file_name = $new_file[1];
 		$old_file_name = $old_file_array[$new_file_index][0];
 		echo $new_file_name . PHP_EOL;
 		echo $old_file_name . PHP_EOL;
-		rename('./converted/' . $old_file_name, $new_file_name);
+		rename('./' . FOLDER . '/' . $old_file_name, $new_file_name);
 	}
 	
 	exit();
 }
 
-@mkdir('converted');
+@mkdir(FOLDER);
 
 $files = getFiles('.');
 
 $digits = ceil(log(max(array_keys($files)), 10));
-//echo 'digits: ' . $digits . PHP_EOL;
+
 $all_file_names = [];
 foreach($files as $key => $file){
 	$new_name = '[' . str_pad($key, $digits, '0', STR_PAD_LEFT) . ']' . $file;
-	//echo 'key: ' . $key . PHP_EOL;
-	//echo 'new name: ' . $new_name . PHP_EOL;
-	
-	rename($file, 'converted/' . $new_name);
+	rename($file, FOLDER . '/' . $new_name);
 	$all_file_names[] = $new_name;
 }
 
