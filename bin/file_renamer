@@ -2,6 +2,22 @@
 
 <?php
 
+/**
+rename multiple files and directories using your text editor
+
+Usage:
+1. go into the directory that contains all the files and directories you want to rename
+2. run file_renamer
+3. enter the newly created directory "converted"
+4. Open "file_names.txt" with a text editor
+5. Change the text *after* the index at the beginning of the line [xx] into whatever you desire. Don't touch the index!
+Example:
+[03]My_old_file_name.txt    ---> [03]fancy_new_name.txt
+6. Save "file_names.txt"
+7. Run file_renamer again (don't change directory).
+8. Remove the directory "converted"
+*/
+
 define('FOLDER', 'renamed');
 define('FILE_NAMES', 'file_names.txt');
 
